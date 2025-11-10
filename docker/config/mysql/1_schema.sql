@@ -51,6 +51,25 @@ CREATE TABLE IF NOT EXISTS `reports` (
                                          KEY `idx_reports_status_created` (`status`, `created_at`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+CREATE TABLE IF NOT EXISTS `sentence_games` (
+                                                `id`             BIGINT       NOT NULL AUTO_INCREMENT,
+                                                `created_at`     DATETIME(6)  NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
+                                                `modified_at`    DATETIME(6)  NOT NULL DEFAULT CURRENT_TIMESTAMP(6) ON UPDATE CURRENT_TIMESTAMP(6),
+
+                                                `original_content`  TEXT         NOT NULL,
+                                                `corrected_content` TEXT         NOT NULL,
+                                                `code`            VARCHAR(50)  NOT NULL,
+
+                                                PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS `translation_tags` (
+                                                  `id`       BIGINT       NOT NULL AUTO_INCREMENT,
+                                                  `code`     VARCHAR(50)  NOT NULL UNIQUE,
+                                                  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+# 프롬프트 테이블
 CREATE TABLE IF NOT EXISTS `prompts` (
                                          `id`            BIGINT       NOT NULL AUTO_INCREMENT,
                                          `created_at`    DATETIME(6)  NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
