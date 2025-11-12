@@ -16,7 +16,7 @@ import java.util.List;
 @RequestMapping("/api/v1/prompt")
 @RequiredArgsConstructor
 @Tag(name = "Prompt", description = "프롬프트 관련 API")
-public class ApiV1PromptController {
+public class ApiPromptController {
     private final PromptService promptService;
 
     @Operation(summary = "프롬프트 생성", description = "새로운 커스텀 프롬프트를 DB에 저장")
@@ -40,7 +40,7 @@ public class ApiV1PromptController {
         return ResponseEntity.noContent().build();
     }
 
-    @Operation(summary = "프롬프트 목록 조회", description = "사용 가능한 프롬프트 목록을 id와 제목만 조회")
+    @Operation(summary = "프롬프트 목록 조회", description = "사용 가능한 프롬프트 목록을 조회")
     @GetMapping()
     public ResponseEntity<List<PromptListResp>> list() {
         return ResponseEntity.ok(promptService.list());
