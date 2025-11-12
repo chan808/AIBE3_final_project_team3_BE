@@ -1,6 +1,7 @@
 package triplestar.mixchat.domain.prompt.prompt.entity;
 
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import triplestar.mixchat.global.jpa.entity.BaseEntity;
