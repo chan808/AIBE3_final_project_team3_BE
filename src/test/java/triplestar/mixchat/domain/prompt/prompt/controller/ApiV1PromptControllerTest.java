@@ -79,6 +79,7 @@ class ApiV1PromptControllerTest {
     }
 
     @Test
+    @DisplayName("프리미엄 회원이 프롬프트 생성에 성공")
     void createPrompt_success() throws Exception {
         setAuth(premiumMember);
         PromptReq req = new PromptReq("테스트 프롬프트", "프롬프트 내용입니다.", PromptType.CUSTOM.name());
@@ -90,6 +91,7 @@ class ApiV1PromptControllerTest {
     }
 
     @Test
+    @DisplayName("베이직 회원은 프롬프트 생성에 실패")
     void createPrompt_fail_basicUser() throws Exception {
         setAuth(basicMember);
         PromptReq req = new PromptReq("테스트 프롬프트", "프롬프트 내용입니다.", PromptType.CUSTOM.name());
@@ -100,6 +102,7 @@ class ApiV1PromptControllerTest {
     }
 
     @Test
+    @DisplayName("프리미엄 회원이 본인 프롬프트를 수정에 성공")
     void updatePrompt_success() throws Exception {
         setAuth(premiumMember);
         Prompt prompt = promptRepository.save(Prompt.create("수정 프롬프트", "내용", PromptType.CUSTOM.name()));
@@ -114,6 +117,7 @@ class ApiV1PromptControllerTest {
     }
 
     @Test
+    @DisplayName("프리미엄 회원이 타인 프롬프트 수정에 실패")
     void updatePrompt_fail_notOwner() throws Exception {
         setAuth(premiumMember);
         Prompt prompt = promptRepository.save(Prompt.create("타인 프롬프트", "내용", PromptType.CUSTOM.name()));
@@ -127,6 +131,7 @@ class ApiV1PromptControllerTest {
     }
 
     @Test
+    @DisplayName("프리미엄 회원이 본인 프롬프트 삭제에 성공")
     void deletePrompt_success() throws Exception {
         setAuth(premiumMember);
         Prompt prompt = promptRepository.save(Prompt.create("삭제 프롬프트", "내용", PromptType.CUSTOM.name()));
@@ -137,6 +142,7 @@ class ApiV1PromptControllerTest {
     }
 
     @Test
+    @DisplayName("프리미엄 회원이 타인 프롬프트 삭제에 실패")
     void deletePrompt_fail_notOwner() throws Exception {
         setAuth(premiumMember);
         Prompt prompt = promptRepository.save(Prompt.create("타인 프롬프트", "내용", PromptType.CUSTOM.name()));
@@ -147,6 +153,7 @@ class ApiV1PromptControllerTest {
     }
 
     @Test
+    @DisplayName("베이직 회원은 PRE_SCRIPTED 프롬프트 목록만 조회")
     void listPrompt_basicUser() throws Exception {
         setAuth(basicMember);
         promptRepository.save(Prompt.create("스크립트1", "내용1", PromptType.PRE_SCRIPTED.name()));
@@ -158,6 +165,7 @@ class ApiV1PromptControllerTest {
     }
 
     @Test
+    @DisplayName("프리미엄 회원은 본인 커스텀 프롬프트까지 목록 조회")
     void listPrompt_premiumUser() throws Exception {
         setAuth(premiumMember);
         Prompt pre1 = promptRepository.save(Prompt.create("스크립트1", "내용1", PromptType.PRE_SCRIPTED.name()));
@@ -171,6 +179,7 @@ class ApiV1PromptControllerTest {
     }
 
     @Test
+    @DisplayName("프리미엄 회원이 본인 커스텀 프롬프트 상세조회에 성공")
     void detailPrompt_success() throws Exception {
         setAuth(premiumMember);
         Prompt prompt = promptRepository.save(Prompt.create("상세 프롬프트", "상세 내용", PromptType.CUSTOM.name()));
@@ -182,6 +191,7 @@ class ApiV1PromptControllerTest {
     }
 
     @Test
+    @DisplayName("프리미엄 회원이 타인 커스텀 프롬프트 상세조회에 실패")
     void detailPrompt_fail_notOwner() throws Exception {
         setAuth(premiumMember);
         Prompt prompt = promptRepository.save(Prompt.create("타인 프롬프트", "내용", PromptType.CUSTOM.name()));
@@ -192,6 +202,7 @@ class ApiV1PromptControllerTest {
     }
 
     @Test
+    @DisplayName("베이직 회원은 커스텀 프롬프트 상세조회에 실패")
     void detailPrompt_fail_basicUser() throws Exception {
         setAuth(basicMember);
         Prompt prompt = promptRepository.save(Prompt.create("상세 프롬프트", "상세 내용", PromptType.CUSTOM.name()));
