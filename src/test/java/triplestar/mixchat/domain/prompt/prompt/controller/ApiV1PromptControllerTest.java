@@ -98,7 +98,7 @@ class ApiV1PromptControllerTest {
         ResultActions result = mockMvc.perform(post("/api/v1/prompt/create")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(req)));
-        result.andExpect(status().is4xxClientError());
+        result.andExpect(status().isForbidden());
     }
 
     @Test
@@ -125,7 +125,7 @@ class ApiV1PromptControllerTest {
         ResultActions result = mockMvc.perform(put("/api/v1/prompt/update/" + prompt.getId())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(req)));
-        result.andExpect(status().is4xxClientError());
+        result.andExpect(status().isForbidden());
     }
 
     @Test
@@ -145,7 +145,7 @@ class ApiV1PromptControllerTest {
         Prompt prompt = promptRepository.save(Prompt.create(premiumMember, "타인 프롬프트", "내용", PromptType.CUSTOM.name()));
         prompt = promptRepository.save(prompt);
         ResultActions result = mockMvc.perform(delete("/api/v1/prompt/delete/" + prompt.getId()));
-        result.andExpect(status().is4xxClientError());
+        result.andExpect(status().isForbidden());
     }
 
     @Test
@@ -191,7 +191,7 @@ class ApiV1PromptControllerTest {
         Prompt prompt = promptRepository.save(Prompt.create(premiumMember, "타인 프롬프트", "내용", PromptType.CUSTOM.name()));
         prompt = promptRepository.save(prompt);
         ResultActions result = mockMvc.perform(get("/api/v1/prompt/" + prompt.getId()));
-        result.andExpect(status().is4xxClientError());
+        result.andExpect(status().isForbidden());
     }
 
     @Test
@@ -201,6 +201,6 @@ class ApiV1PromptControllerTest {
         Prompt prompt = promptRepository.save(Prompt.create(basicMember, "상세 프롬프트", "상세 내용", PromptType.CUSTOM.name()));
         prompt = promptRepository.save(prompt);
         ResultActions result = mockMvc.perform(get("/api/v1/prompt/" + prompt.getId()));
-        result.andExpect(status().is4xxClientError());
+        result.andExpect(status().isForbidden());
     }
 }

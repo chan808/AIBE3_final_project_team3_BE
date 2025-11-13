@@ -16,6 +16,8 @@ import triplestar.mixchat.domain.prompt.prompt.dto.PromptDetailResp;
 import triplestar.mixchat.domain.prompt.prompt.entity.Prompt;
 import triplestar.mixchat.domain.prompt.prompt.repository.PromptRepository;
 
+import org.springframework.security.access.AccessDeniedException;
+
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -39,7 +41,7 @@ public class PromptService {
     // 프리미엄 등급 확인
     private void checkPremium(Member member) {
         if (member.getMembershipGrade() != MembershipGrade.PREMIUM) {
-            throw new IllegalStateException();
+            throw new AccessDeniedException("프리미엄 등급이 아닙니다.");
         }
     }
 
@@ -60,7 +62,7 @@ public class PromptService {
         checkPremium(member);
         Prompt prompt = promptRepository.findById(id).orElseThrow(IllegalStateException::new);
         if (prompt.getMember() == null || !prompt.getMember().getId().equals(member.getId())) {
-            throw new IllegalStateException();
+            throw new AccessDeniedException("본인 프롬프트가 아닙니다.");
         }
         prompt.modify(req.title(), req.content(), req.promptType());
         return new PromptDetailResp(prompt);
@@ -73,7 +75,7 @@ public class PromptService {
         checkPremium(member);
         Prompt prompt = promptRepository.findById(id).orElseThrow(IllegalStateException::new);
         if (prompt.getMember() == null || !prompt.getMember().getId().equals(member.getId())) {
-            throw new IllegalStateException();
+            throw new AccessDeniedException("본인 프롬프트가 아닙니다.");
         }
         promptRepository.deleteById(id);
     }
@@ -102,11 +104,11 @@ public class PromptService {
     public PromptDetailResp detail(Long id) {
         Member member = getCurrentMember();
         if (member.getMembershipGrade() != MembershipGrade.PREMIUM) {
-            throw new IllegalStateException();
+            throw new AccessDeniedException("프리미엄 등급이 아닙니다.");
         }
         Prompt prompt = promptRepository.findById(id).orElseThrow(IllegalStateException::new);
         if (prompt.getType() != PromptType.CUSTOM || prompt.getMember() == null || !prompt.getMember().getId().equals(member.getId())) {
-            throw new IllegalStateException();
+            throw new AccessDeniedException("본인 프롬프트가 아닙니다.");
         }
         return new PromptDetailResp(prompt);
     }
