@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import triplestar.mixchat.domain.member.member.constant.MembershipGrade;
 import triplestar.mixchat.global.jpa.entity.BaseEntity;
 import triplestar.mixchat.domain.prompt.prompt.constant.PromptType;
 import triplestar.mixchat.domain.member.member.entity.Member;
@@ -46,5 +47,13 @@ public class Prompt extends BaseEntity {
         this.title = title;
         this.content = content;
         this.type = PromptType.valueOf(promptType);
+    }
+
+    public boolean isDefaultPrompt() {
+        return this.member == null;
+    }
+
+    public PromptType getPromptType() {
+        return this.type;
     }
 }
