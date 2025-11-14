@@ -52,8 +52,4 @@ public class Prompt extends BaseEntity {
     public boolean isDefaultPrompt() {
         return this.member == null;
     }
-
-    public PromptType getPromptType() {
-        return this.type;
-    }
 }

@@ -6,7 +6,6 @@ import org.springframework.transaction.annotation.Transactional;
 import triplestar.mixchat.domain.member.member.entity.Member;
 import triplestar.mixchat.domain.member.member.repository.MemberRepository;
 import triplestar.mixchat.domain.member.member.constant.MembershipGrade;
-import triplestar.mixchat.global.security.CustomUserDetails;
 import triplestar.mixchat.domain.prompt.prompt.constant.PromptType;
 import triplestar.mixchat.domain.prompt.prompt.dto.PromptReq;
 import triplestar.mixchat.domain.prompt.prompt.dto.PromptListResp;
@@ -20,9 +19,11 @@ import jakarta.persistence.EntityNotFoundException;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
+import lombok.extern.slf4j.Slf4j;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class PromptService {
     private final PromptRepository promptRepository;
     private final MemberRepository memberRepository;

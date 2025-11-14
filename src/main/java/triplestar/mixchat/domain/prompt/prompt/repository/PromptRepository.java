@@ -10,7 +10,6 @@ import java.util.List;
 
 public interface PromptRepository extends JpaRepository<Prompt, Long> {
     List<Prompt> findByType(PromptType type);
-    List<Prompt> findByTypeAndMember_Id(PromptType type, Long memberId);
 
     @Query("SELECT p FROM Prompt p WHERE p.type = :preScriptedType OR (p.type = :customType AND p.member.id = :memberId)")
     List<Prompt> findForPremium(@Param("preScriptedType") PromptType preScriptedType,
