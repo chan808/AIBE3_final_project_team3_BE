@@ -1,6 +1,7 @@
 package triplestar.mixchat.domain.chat.chat.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -9,6 +10,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.test.context.support.TestExecutionEvent;
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
@@ -57,30 +59,19 @@ class ChatControllerIntTest {
     void setUp() {
         // 테스트 실행 전, 실제 DB에 테스트용 사용자를 저장합니다.
         // @Transactional에 의해 테스트가 끝나면 롤백됩니다.
-        user1 = memberRepository.save(Member.builder()
-                .email("user1@example.com")
-                .nickname("유저1")
-                .password(Password.encrypt("ValidPassword123", passwordEncoder))
-                .name("유저1")
-                .country(Country.SOUTH_KOREA)
-                .englishLevel(EnglishLevel.BEGINNER)
-                .interest("테스트")
-                .description("테스트 유저 1")
-                .build());
-        user2 = memberRepository.save(Member.builder()
-                .email("user2@example.com")
-                .nickname("유저2")
-                .password(Password.encrypt("ValidPassword123", passwordEncoder))
-                .name("유저2")
-                .country(Country.UNITED_STATES)
-                .englishLevel(EnglishLevel.INTERMEDIATE)
-                .interest("테스트")
-                .description("테스트 유저 2")
-                .build());
+        // TestFactoryMember도 활용 가능합니다.
+        user1 = memberRepository.save(Member.createMember(
+                "user1@example.com", Password.encrypt("ValidPassword123", passwordEncoder),
+                "유저1", "유저1", Country.SOUTH_KOREA, EnglishLevel.BEGINNER,
+                List.of("테스트"), "테스트 유저 1"));
+        user2 = memberRepository.save(Member.createMember(
+                "user2@example.com", Password.encrypt("ValidPassword123", passwordEncoder),
+                "유저2", "유저2", Country.UNITED_STATES, EnglishLevel.INTERMEDIATE,
+                List.of("테스트"), "테스트 유저 2"));
     }
 
     @Test
-    @WithUserDetails(value = "user1@example.com", userDetailsServiceBeanName = "customUserDetailsService")
+    @WithUserDetails(value = "유저1", userDetailsServiceBeanName = "testUserDetailsService", setupBefore = TestExecutionEvent.TEST_EXECUTION)
     @DisplayName("1:1 채팅방 생성 통합 테스트 성공")
     void createDirectRoom_integration_success() throws Exception {
         // given (준비)
@@ -96,8 +87,7 @@ class ChatControllerIntTest {
 
         // then (검증) - 1. API 응답 검증
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.success").value(true))
-                .andExpect(jsonPath("$.message").value("1:1 채팅방 생성/조회에 성공하였습니다."))
+                .andExpect(jsonPath("$.msg").value("1:1 채팅방 생성/조회에 성공하였습니다."))
                 .andExpect(jsonPath("$.data.name").value("유저1, 유저2"));
 
         // then (검증) - 2. DB 상태 검증
