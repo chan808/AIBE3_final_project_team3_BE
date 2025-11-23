@@ -11,17 +11,63 @@ spring:
     hibernate:
       ddl-auto: create
 
-  datasource:
-    url: jdbc:mysql://mysql:3306/${MYSQL_DATABASE}
-    username: ${MYSQL_USER}
-    password: ${MYSQL_PASSWORD}
-    driver-class-name: com.mysql.cj.jdbc.Driver
-
   data:
     mongodb:
       uri: mongodb://${MONGO_INITDB_ROOT_USERNAME}:${MONGO_INITDB_ROOT_PASSWORD}@localhost:27017/${MONGO_DB}?authSource=admin
-
+  application:
+    name: mixchat
+  output:
+    ansi:
+      enabled: always
+  datasource:
+    hikari:
+      auto-commit: false
+  jackson:
+    serialization:
+      fail-on-empty-beans: false
 swagger:
   redirect:
     # "/"로 들어왔을 때 최종적으로 리다이렉트될 Swagger UI 경로
     path: /swagger-ui/index.html
+
+server:
+  port: 8080
+  forward-headers-strategy: native
+
+springdoc:
+  default-produces-media-type: application/json;charset=UTF-8
+logging:
+  level:
+    org.hibernate.orm.jdbc.bind: TRACE
+    org.hibernate.orm.jdbc.extract: TRACE
+    org.springframework.transaction.interceptor: TRACE
+    com.back: DEBUG
+management:
+  endpoints:
+    web:
+      base-path: /actuator            # 기본값이지만 명시
+      exposure:
+        include: health,info          # 필요시 metrics 등 추가
+  endpoint:
+    health:
+      probes:
+        enabled: true                 # /actuator/health/{liveness,readiness} 활성화
+      show-details: never             # 프로브 용도면 never 권장(민감정보 차단)
+custom:
+  dev:
+    cookieDomain: localhost
+    frontUrl: "http://${custom.dev.cookieDomain}:3000"
+    backUrl: "http://${custom.dev.cookieDomain}:${server.port}"
+  prod:
+    cookieDomain: mixchat.yhcho.com
+    frontUrl: "https://www.${custom.prod.cookieDomain}"
+    backUrl: "https://api.${custom.prod.cookieDomain}"
+  staging:
+    cookieDomain: staging.mixchat.yhcho.com
+    frontUrl: "https://www.${custom.staging.cookieDomain}"
+    backUrl: "https://api.${custom.staging.cookieDomain}"
+  site:
+    cookieDomain: "${custom.dev.cookieDomain}"
+    frontUrl: "${custom.dev.frontUrl}"
+    backUrl: "${custom.dev.backUrl}"
+    name: mixchat
