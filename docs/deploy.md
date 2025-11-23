@@ -20,3 +20,4 @@
     - docker-compose-staging.yml
     - 프론트 도메인: staging.mixchat.yhcho.com
     - api 도메인 : api.staging.mixchat.yhcho.com
+    - 참고: Terraform user-data 스크립트가 S3 버킷 이름 등 일부 환경변수를 실제 인프라 값으로 덮어쓴다

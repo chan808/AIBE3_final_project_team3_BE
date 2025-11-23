@@ -278,6 +278,7 @@ locals {
   ]
 
   docker_compose_prod_b64        = base64encode(file("${path.module}/../docker-compose-prod.yml"))
+  docker_compose_staging_b64     = base64encode(file("${path.module}/../docker-compose-staging.yml"))
   app_env_prod_b64               = base64encode(file("${path.module}/../.env"))
   app_env_prod_properties_b64    = base64encode(file("${path.module}/../.env.prod.properties"))
   app_env_staging_properties_b64 = base64encode(file("${path.module}/../.env.staging.properties"))
@@ -308,6 +309,7 @@ locals {
     github_access_token_1_owner    = var.github_access_token_1_owner
     github_access_token_1          = var.github_access_token_1
     docker_compose_prod_b64        = local.docker_compose_prod_b64
+    docker_compose_staging_b64     = local.docker_compose_staging_b64
     app_env_prod_b64               = local.app_env_prod_b64
     app_env_prod_properties_b64    = local.app_env_prod_properties_b64
     app_env_staging_properties_b64 = local.app_env_staging_properties_b64

@@ -27,7 +27,7 @@ if command -v dnf >/dev/null 2>&1; then
   pkg_mgr="dnf"
 fi
 $pkg_mgr update -y
-$pkg_mgr install -y docker git curl
+$pkg_mgr install -y docker git
 install -d -m 0755 /usr/libexec/docker/cli-plugins
 curl -SL "https://github.com/docker/compose/releases/download/v2.29.7/docker-compose-linux-x86_64" \
   -o /usr/libexec/docker/cli-plugins/docker-compose
