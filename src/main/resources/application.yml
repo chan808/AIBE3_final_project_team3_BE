@@ -11,17 +11,26 @@ spring:
     hibernate:
       ddl-auto: create
 
+  datasource:
+    url: jdbc:mysql://mysql:3306/${MYSQL_DATABASE}
+    username: ${MYSQL_USER}
+    password: ${MYSQL_PASSWORD}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
   data:
     mongodb:
       uri: mongodb://${MONGO_INITDB_ROOT_USERNAME}:${MONGO_INITDB_ROOT_PASSWORD}@localhost:27017/${MONGO_DB}?authSource=admin
+
+    web:
+      pageable:
+        one-indexed-parameters: true
+        max-page-size: 100
+
   application:
     name: mixchat
   output:
     ansi:
       enabled: always
-  datasource:
-    hikari:
-      auto-commit: false
   jackson:
     serialization:
       fail-on-empty-beans: false
