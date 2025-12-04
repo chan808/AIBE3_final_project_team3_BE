@@ -46,7 +46,7 @@ public class StompHandler implements ExecutorChannelInterceptor {
     public StompHandler(
             AuthJwtProvider authJwtProvider,
             MemberRepository memberRepository,
-            @Lazy ChatMemberService chatMemberService) {
+            ChatMemberService chatMemberService) {
         this.authJwtProvider = authJwtProvider;
         this.memberRepository = memberRepository;
         this.chatMemberService = chatMemberService;
@@ -114,7 +114,6 @@ public class StompHandler implements ExecutorChannelInterceptor {
         Authentication authentication = new UsernamePasswordAuthenticationToken(
                 userDetails, null, userDetails.getAuthorities());
         accessor.setUser(authentication);
-
         log.info("WebSocket 연결 성공 - memberId: {}, sessionId: {}", member.getId(), accessor.getSessionId());
     }
 
