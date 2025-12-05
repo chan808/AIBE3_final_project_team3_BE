@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 import triplestar.mixchat.domain.learningNote.learningNote.entity.Feedback;
 import triplestar.mixchat.domain.learningNote.learningNote.entity.LearningNote;
 import triplestar.mixchat.domain.learningNote.learningNote.repository.LearningNoteDocumentRepository;
+import triplestar.mixchat.domain.learningNote.learningNote.repository.LearningNoteRepository;
 import triplestar.mixchat.domain.learningNote.learningNote.service.LearningNoteEmbeddingService;
 import triplestar.mixchat.domain.member.member.constant.Country;
 import triplestar.mixchat.domain.member.member.constant.EnglishLevel;
@@ -23,8 +24,8 @@ import triplestar.mixchat.domain.member.member.entity.Password;
 import triplestar.mixchat.domain.member.member.repository.MemberRepository;
 import triplestar.mixchat.domain.translation.translation.constant.TranslationTagCode;
 
-@SpringBootTest
 @ActiveProfiles("test")
+@SpringBootTest
 @Transactional
 @DisplayName("학습노트 임베딩 저장 테스트")
 class LearningNoteEmbeddingTest {
@@ -44,6 +45,8 @@ class LearningNoteEmbeddingTest {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+    @Autowired
+    private LearningNoteRepository learningNoteRepository;
     private Member testMember;
 
     @BeforeEach
@@ -76,7 +79,7 @@ class LearningNoteEmbeddingTest {
         note.addFeedback(fb1);
 
         // 임시 ID 부여 (보통 JPA 저장 후 ID가 생성되지만, 여기서는 단독 테스트)
-
+        note = learningNoteRepository.save(note);
 
         // when: 임베딩 생성 + ES 저장
         embeddingService.index(note);

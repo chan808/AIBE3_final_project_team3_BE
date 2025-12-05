@@ -97,6 +97,7 @@ public class Member extends BaseEntity {
         this.membershipGrade = MembershipGrade.BASIC;
         this.isBlocked = false;
         this.isDeleted = false;
+        lastSeenAt = LocalDateTime.now();
     }
 
     private void validate(String email, Password password, String name, String nickname, Country country,

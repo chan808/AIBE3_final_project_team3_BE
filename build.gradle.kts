@@ -2,7 +2,6 @@ plugins {
     java
     id("org.springframework.boot") version "3.5.7"
     id("io.spring.dependency-management") version "1.1.7"
-    kotlin("jvm")
 }
 val springCloudVersion by extra("2025.0.0")
 val springAiVersion by extra("1.1.0")
@@ -33,6 +32,9 @@ dependencies {
     implementation("org.springframework.cloud:spring-cloud-function-context")
     implementation("org.springframework.ai:spring-ai-starter-model-openai")
     developmentOnly("org.springframework.boot:spring-boot-devtools")
+    implementation("org.springframework.ai:spring-ai-starter-model-ollama")
+    //implementation("org.springframework.ai:spring-ai-starter-model-vertex-ai-gemini")
+
     implementation("org.springframework.ai:spring-ai-starter-model-transformers")   // 임베딩 모델
     // Lombok
     compileOnly("org.projectlombok:lombok")
