@@ -10,6 +10,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
+import triplestar.mixchat.domain.member.member.constant.Role;
 import triplestar.mixchat.domain.member.member.dto.MemberDetailResp;
 import triplestar.mixchat.domain.member.member.dto.MemberInfoModifyReq;
 import triplestar.mixchat.domain.member.member.dto.MemberPresenceSummaryResp;
@@ -49,13 +50,25 @@ public class MemberService {
         // isFriend, isPendingRequest는 모두 false로 반환
         if (currentUserId == null) {
             Member member = findMemberById(memberId);
-            return MemberDetailResp.forAnonymousViewer(member);
+            MemberDetailResp memberDetailResp = MemberDetailResp.forAnonymousViewer(member);
+            validateIsViewable(memberDetailResp);
+
+            return memberDetailResp;
         }
 
         // 회원이 조회하는 경우
         // 친구 관계 및 친구 신청 상태를 함께 조회
-        return memberRepository.findByIdWithFriendInfo(currentUserId, memberId)
+        MemberDetailResp memberDetailResp = memberRepository.findByIdWithFriendInfo(currentUserId, memberId)
                 .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 회원입니다."));
+        validateIsViewable(memberDetailResp);
+
+        return memberDetailResp;
+    }
+
+    private void validateIsViewable(MemberDetailResp memberDetailResp) {
+        if (Role.isNotMember(memberDetailResp.role())) {
+            throw new IllegalStateException("해당 사용자는 프로필 상세 조회 대상이 아닙니다.");
+        }
     }
 
     // NOTE : 현재 로그인한 사용자를 제외한 모든 회원 조회 -> 추후 로그인 사용자도 포함시킬지 검토 필요

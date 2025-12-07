@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 import triplestar.mixchat.domain.member.friend.dto.FriendshipRequestResp;
 import triplestar.mixchat.domain.member.friend.entity.FriendshipRequest;
 import triplestar.mixchat.domain.member.friend.repository.FriendshipRequestRepository;
+import triplestar.mixchat.domain.member.member.constant.Role;
 import triplestar.mixchat.domain.member.member.entity.Member;
 import triplestar.mixchat.domain.member.member.repository.MemberRepository;
 import triplestar.mixchat.domain.notification.constant.NotificationType;
@@ -41,8 +42,12 @@ public class FriendshipRequestService {
     }
 
     private void validateFriendshipRequest(Member sender, Member receiver) {
+        // 생성이 불가능한 경우 처리
         if (sender.equals(receiver)) {
             throw new IllegalArgumentException("자기 자신에게 친구 요청을 보낼 수 없습니다.");
+        }
+        if (Role.isNotMember(receiver.getRole())) {
+            throw new IllegalStateException("친구 요청을 보낼 수 없는 대상입니다.");
         }
         boolean friendshipExists = friendshipService.isFriends(sender.getId(), receiver.getId());
         if (friendshipExists) {

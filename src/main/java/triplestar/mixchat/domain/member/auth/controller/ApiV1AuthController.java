@@ -16,6 +16,7 @@ import triplestar.mixchat.domain.member.auth.dto.LogInReq;
 import triplestar.mixchat.domain.member.auth.service.AuthService;
 import triplestar.mixchat.domain.member.auth.util.CookieHelper;
 import triplestar.mixchat.domain.member.member.dto.MemberSummaryResp;
+import triplestar.mixchat.domain.member.member.dto.MemberSummaryResp;
 import triplestar.mixchat.global.response.CustomResponse;
 
 @RestController

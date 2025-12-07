@@ -2,9 +2,11 @@ package triplestar.mixchat.domain.member.member.dto;
 
 import static io.swagger.v3.oas.annotations.media.Schema.RequiredMode.REQUIRED;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.time.LocalDateTime;
 import java.util.List;
+import triplestar.mixchat.domain.member.member.constant.Role;
 import triplestar.mixchat.domain.member.member.entity.Member;
 
 @Schema(description = "회원 상세 조회 응답 DTO")
@@ -43,7 +45,10 @@ public record MemberDetailResp(
 
         @Schema(description = "상대방이 현재 사용자에게 보낸 친구 요청의 ID. 대기 중인 요청이 없으면 null입니다.",
                 example = "51")
-        Long receivedFriendRequestId
+        Long receivedFriendRequestId,
+
+        @JsonIgnore
+        Role role
 ) {
     public static MemberDetailResp forAnonymousViewer(Member member) {
         return new MemberDetailResp(
@@ -57,7 +62,8 @@ public record MemberDetailResp(
                 member.getLastSeenAt(),
                 false,
                 false,
-                null
+                null,
+                member.getRole()
         );
     }
 }

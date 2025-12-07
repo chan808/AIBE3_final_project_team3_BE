@@ -35,13 +35,13 @@ public class PresenceService {
     }
 
     public void disconnect(Long memberId) {
+        memberRepository.updateLastSeenAt(memberId, LocalDateTime.now());
         presenceRepository.remove(memberId);
     }
 
     @Scheduled(fixedRateString = "${presence.scheduled.cleanup-rate-ms}")
     @Transactional
     public void removeExpiredEntries() {
-        log.info("Starting cleanup of expired presence entries.");
         List<ExpiredPresence> expiredPresences = presenceRepository.cleanupExpired();
 
         if (expiredPresences.isEmpty()) {
@@ -59,7 +59,6 @@ public class PresenceService {
             // 더티체킹 대신 JPQL update 사용
             memberRepository.updateLastSeenAt(memberId, lastSeenDateTime);
         });
-        log.info("Completed cleanup of expired presence entries. Processed {} entries.", expiredPresences.size());
     }
 }
 
