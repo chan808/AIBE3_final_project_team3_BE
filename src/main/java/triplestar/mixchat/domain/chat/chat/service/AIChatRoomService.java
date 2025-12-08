@@ -29,7 +29,6 @@ import triplestar.mixchat.global.cache.LearningNoteCacheRepository;
 @Slf4j
 @Transactional(readOnly = true)
 public class AIChatRoomService {
-
     private final AIChatRoomRepository aiChatRoomRepository;
     private final MemberRepository memberRepository;
     private final ChatRoomMemberRepository chatRoomMemberRepository;
