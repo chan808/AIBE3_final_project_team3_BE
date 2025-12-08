@@ -17,7 +17,7 @@ import triplestar.mixchat.domain.learningNote.learningNote.entity.Feedback;
 import triplestar.mixchat.domain.learningNote.learningNote.entity.LearningNote;
 import triplestar.mixchat.domain.learningNote.learningNote.repository.LearningNoteRepository;
 import triplestar.mixchat.domain.learningNote.learningNote.service.LearningNoteEmbeddingService;
-import triplestar.mixchat.domain.learningNote.learningNote.service.LearningNoteSaveService;
+import triplestar.mixchat.domain.learningNote.learningNote.service.LearningNoteRagService;
 import triplestar.mixchat.domain.member.member.constant.Country;
 import triplestar.mixchat.domain.member.member.constant.EnglishLevel;
 import triplestar.mixchat.domain.member.member.entity.Member;
@@ -43,7 +43,7 @@ public class LearningNoteSearchIntegrationTest {
     private LearningNoteEmbeddingService embeddingService;
 
     @Autowired
-    private LearningNoteSaveService searchService;
+    private LearningNoteRagService searchService;
 
     @Autowired
     private PasswordEncoder passwordEncoder;

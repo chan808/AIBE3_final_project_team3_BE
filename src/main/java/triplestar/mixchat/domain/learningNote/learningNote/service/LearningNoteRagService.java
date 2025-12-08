@@ -13,29 +13,29 @@ import triplestar.mixchat.domain.learningNote.learningNote.embedding.EmbeddingTe
 import triplestar.mixchat.domain.learningNote.learningNote.entity.LearningNote;
 import triplestar.mixchat.domain.learningNote.learningNote.repository.LearningNoteDocumentRepository;
 import triplestar.mixchat.domain.learningNote.learningNote.repository.LearningNoteRepository;
-import triplestar.mixchat.global.cache.LearningNoteSearchCacheService;
+import triplestar.mixchat.global.cache.LearningNoteCacheRepository;
 
 @Service
-public class LearningNoteSaveService {
+public class LearningNoteRagService {
     private final LearningNoteDocumentRepository noteDocumentRepository;
     private final LearningNoteRepository learningNoteRepository;
     private final EmbeddingModel embeddingModel;
-    private final LearningNoteSearchCacheService learningNoteSearchCacheService;
-    public LearningNoteSaveService(
+    private final LearningNoteCacheRepository learningNoteCacheRepository;
+    public LearningNoteRagService(
             LearningNoteDocumentRepository noteDocumentRepository,
             LearningNoteRepository learningNoteRepository,
             @Qualifier("openAiEmbeddingModel") EmbeddingModel embeddingModel,
-            LearningNoteSearchCacheService learningNoteSearchCacheService
+            LearningNoteCacheRepository learningNoteCacheRepository
     ) {
         this.noteDocumentRepository = noteDocumentRepository;
         this.learningNoteRepository = learningNoteRepository;
         this.embeddingModel = embeddingModel;
-        this.learningNoteSearchCacheService = learningNoteSearchCacheService;
+        this.learningNoteCacheRepository = learningNoteCacheRepository;
     }
 
     public void saveByRecentNotes(Long roomId, Long memberId) {
         // 캐시 체크
-        List<Long> cached = learningNoteSearchCacheService.get(roomId, memberId);
+        List<Long> cached = learningNoteCacheRepository.get(roomId, memberId);
         if (cached != null) {
             return;
         }
@@ -46,7 +46,7 @@ public class LearningNoteSaveService {
             return;
         }
 
-        // 검색할 학습노트 id 저장
+        // 학습노트 제외를 위한 id 저장
         List<Long> excludeIds = recentNotes.stream().map(LearningNote::getId).toList();
 
         Map<Long, Double> scoreMap = new HashMap<>();
@@ -74,7 +74,7 @@ public class LearningNoteSaveService {
             });
         }
 
-        // 본인 학습노트 제외
+        // 결과에서 제외할 학습노트 제거
         excludeIds.forEach(scoreMap::remove);
 
         // 상위 10개 리턴
@@ -84,14 +84,15 @@ public class LearningNoteSaveService {
                 .limit(10)
                 .toList();
 
-        learningNoteSearchCacheService.save(roomId, memberId, topIds);
+        learningNoteCacheRepository.save(roomId, memberId, topIds);
     }
 
     public List<LearningNote> loadNotesFromCache(Long roomId, Long memberId) {
-        List<Long> ids = learningNoteSearchCacheService.get(roomId, memberId);
+        List<Long> ids = learningNoteCacheRepository.get(roomId, memberId);
 
         if (ids == null || ids.isEmpty()) {
-            return List.of();
+            saveByRecentNotes(roomId, memberId);
+            ids = learningNoteCacheRepository.get(roomId, memberId);
         }
 
         return learningNoteRepository.findAllById(ids);

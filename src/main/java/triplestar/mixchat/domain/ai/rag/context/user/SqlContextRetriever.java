@@ -9,7 +9,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import triplestar.mixchat.domain.learningNote.learningNote.entity.LearningNote;
 import triplestar.mixchat.domain.learningNote.learningNote.repository.LearningNoteRepository;
-import triplestar.mixchat.domain.learningNote.learningNote.service.LearningNoteSaveService;
+import triplestar.mixchat.domain.learningNote.learningNote.service.LearningNoteRagService;
 
 @Component
 public class SqlContextRetriever implements ContextRetriever {
@@ -17,30 +17,28 @@ public class SqlContextRetriever implements ContextRetriever {
     private final LearningNoteRepository learningNoteRepository;
     private final int minItems;
     private final int maxItems;
-    private final LearningNoteSaveService learningNoteSearchService;
 
     public SqlContextRetriever(
             LearningNoteRepository learningNoteRepository,
             @Value("${ai.context-retriever.sql.min}")
             int minItems,
             @Value("${ai.context-retriever.sql.max}")
-            int maxItems, LearningNoteSaveService learningNoteSearchService
+            int maxItems, LearningNoteRagService learningNoteSearchService
     ) {
         this.learningNoteRepository = learningNoteRepository;
         this.minItems = minItems;
         this.maxItems = maxItems;
-        this.learningNoteSearchService = learningNoteSearchService;
     }
 
     @Override
-    public List<UserContextChunk> retrieve(Long roomId, Long userId, String userMessage, int itemSize) {
+    public List<UserContextChunk> retrieve(Long userId, String userMessage, int itemSize) {
         if (itemSize < minItems || itemSize > maxItems) {
             throw new IllegalArgumentException(
                     "컨텍스트 청크 수는 %d에서 %d 사이여야 합니다.".formatted(minItems, maxItems)
             );
         }
 
-        List<LearningNote> notes = learningNoteSearchService.loadNotesFromCache(roomId, userId);
+        List<LearningNote> notes = learningNoteRepository.findTopNByMemberId(userId, itemSize);
 
         // text 맵에 originalContent와 correctedContent를 모두 포함
         return notes.stream()

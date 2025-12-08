@@ -16,12 +16,12 @@ import triplestar.mixchat.domain.chat.chat.entity.AIChatRoom;
 import triplestar.mixchat.domain.chat.chat.entity.ChatMember;
 import triplestar.mixchat.domain.chat.chat.repository.AIChatRoomRepository;
 import triplestar.mixchat.domain.chat.chat.repository.ChatRoomMemberRepository;
-import triplestar.mixchat.domain.learningNote.learningNote.service.LearningNoteSaveService;
+import triplestar.mixchat.domain.learningNote.learningNote.service.LearningNoteRagService;
 import triplestar.mixchat.domain.member.member.entity.Member;
 import triplestar.mixchat.domain.member.member.repository.MemberRepository;
 import triplestar.mixchat.global.ai.BotConstant;
 import triplestar.mixchat.global.cache.ChatAuthCacheService;
-import triplestar.mixchat.global.cache.LearningNoteSearchCacheService;
+import triplestar.mixchat.global.cache.LearningNoteCacheRepository;
 
 @Service
 @RequiredArgsConstructor
@@ -35,8 +35,8 @@ public class AIChatRoomService {
     private final ChatAuthCacheService chatAuthCacheService;
     private final ChatMemberService chatMemberService;
     private final UserPromptRepository userPromptRepository;
-    private final LearningNoteSearchCacheService learningNoteSearchCacheService;
-    private final LearningNoteSaveService learningNoteSearchService;
+    private final LearningNoteCacheRepository learningNoteCacheRepository;
+    private final LearningNoteRagService learningNoteSearchService;
 
     private Member findMemberById(Long memberId) {
         return memberRepository.findById(memberId)
@@ -71,7 +71,7 @@ public class AIChatRoomService {
     // AI 채팅방 나가기
     @Transactional
     public void leaveAIChatRoom(Long roomId, Long currentUserId) {
-        learningNoteSearchCacheService.delete(roomId, currentUserId);
+        learningNoteCacheRepository.delete(roomId, currentUserId);
         chatMemberService.leaveRoom(currentUserId, roomId, ChatRoomType.AI);
     }
 }

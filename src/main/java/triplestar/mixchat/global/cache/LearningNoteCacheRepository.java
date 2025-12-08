@@ -8,13 +8,13 @@ import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
 @Service
-public class LearningNoteSearchCacheService {
+public class LearningNoteCacheRepository {
 
     private final StringRedisTemplate redis;
     private final String keyPrefix;
     private final Duration ttl;
 
-    public LearningNoteSearchCacheService(
+    public LearningNoteCacheRepository(
             StringRedisTemplate redis,
             @Value("${redis.prefix.learning-search:learning:search:room:}") String keyPrefix,
             @Value("${redis.ttl.learning-search-minutes:10}") long ttlMinutes
