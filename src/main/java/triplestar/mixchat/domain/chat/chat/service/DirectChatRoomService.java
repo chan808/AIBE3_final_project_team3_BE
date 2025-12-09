@@ -17,6 +17,7 @@ import triplestar.mixchat.domain.chat.chat.repository.ChatRoomMemberRepository;
 import triplestar.mixchat.domain.chat.chat.repository.DirectChatRoomRepository;
 import triplestar.mixchat.domain.member.member.constant.Role;
 import triplestar.mixchat.domain.member.member.entity.Member;
+import triplestar.mixchat.domain.member.member.policy.MemberAccessPolicy;
 import triplestar.mixchat.domain.member.member.repository.MemberRepository;
 import triplestar.mixchat.global.cache.ChatAuthCacheService;
 
@@ -47,8 +48,8 @@ public class DirectChatRoomService {
         Member member1 = findMemberById(member1Id);
         Member member2 = findMemberById(member2Id);
 
-        if (Role.isNotMember(member2.getRole())) {
-            throw new IllegalStateException("상대방이 회원이 아닙니다. 채팅을 시작할 수 없습니다.");
+        if (MemberAccessPolicy.isNotAccessible(member2)) {
+            throw new IllegalStateException("1:1 채팅 할 수 없는 대상입니다.");
         }
 
         DirectChatRoom room = getDirectChatRoom(member1, member2);

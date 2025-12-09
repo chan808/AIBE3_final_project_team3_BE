@@ -48,27 +48,16 @@ public class MemberService {
     public MemberDetailResp getMemberDetails(Long currentUserId, Long memberId) {
         // 비회원이 조회하는 경우
         // isFriend, isPendingRequest는 모두 false로 반환
+        // TODO : 조회 대상 검증
         if (currentUserId == null) {
             Member member = findMemberById(memberId);
-            MemberDetailResp memberDetailResp = MemberDetailResp.forAnonymousViewer(member);
-            validateIsViewable(memberDetailResp);
-
-            return memberDetailResp;
+            return MemberDetailResp.forAnonymousViewer(member);
         }
 
         // 회원이 조회하는 경우
         // 친구 관계 및 친구 신청 상태를 함께 조회
-        MemberDetailResp memberDetailResp = memberRepository.findByIdWithFriendInfo(currentUserId, memberId)
+        return memberRepository.findByIdWithFriendInfo(currentUserId, memberId)
                 .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 회원입니다."));
-        validateIsViewable(memberDetailResp);
-
-        return memberDetailResp;
-    }
-
-    private void validateIsViewable(MemberDetailResp memberDetailResp) {
-        if (Role.isNotMember(memberDetailResp.role())) {
-            throw new IllegalStateException("해당 사용자는 프로필 상세 조회 대상이 아닙니다.");
-        }
     }
 
     // NOTE : 현재 로그인한 사용자를 제외한 모든 회원 조회 -> 추후 로그인 사용자도 포함시킬지 검토 필요

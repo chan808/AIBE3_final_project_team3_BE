@@ -59,7 +59,7 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
                 )
             )
             FROM Member m
-            WHERE m.id = :memberId
+            WHERE m.id = :memberId 
     """)
     Optional<MemberDetailResp> findByIdWithFriendInfo(Long signInId, Long memberId);
 
