@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 import triplestar.mixchat.domain.member.friend.dto.FriendDetailResp;
+import triplestar.mixchat.domain.member.friend.dto.FriendshipStateInfo;
 import triplestar.mixchat.domain.member.friend.entity.Friendship;
 import triplestar.mixchat.domain.member.member.entity.Member;
 
@@ -52,4 +53,37 @@ public interface FriendshipRepository extends JpaRepository<Friendship, Long> {
                 )
             """)
     FriendDetailResp findFriendDetail(Long smallerId, Long largerId, Long friendId);
+
+    @Query("""
+            SELECT new triplestar.mixchat.domain.member.friend.dto.FriendshipStateInfo(
+                /* isFriend (boolean) */
+                EXISTS (
+                    SELECT f FROM Friendship f
+                    WHERE (
+                        f.smallerMember.id = :loginId AND f.largerMember.id = :memberId
+                    )
+                    OR (
+                        f.smallerMember.id = :memberId AND f.largerMember.id = :loginId
+                    )
+                ),
+            
+                /* isFriendRequestSent (boolean) */
+                EXISTS (
+                    SELECT fr FROM FriendshipRequest fr
+                    WHERE fr.sender.id = :loginId
+                      AND fr.receiver.id = :memberId
+                ),
+            
+                /* receivedFriendRequestId (Long) */
+                (
+                    SELECT fr.id
+                    FROM FriendshipRequest fr
+                    WHERE fr.sender.id = :memberId
+                      AND fr.receiver.id = :loginId
+                )
+            )
+            FROM Member m
+            WHERE m.id = :memberId
+            """)
+    FriendshipStateInfo findFriendshipStateInfo(Long loginId, Long memberId);
 }

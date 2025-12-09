@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.time.LocalDateTime;
 import java.util.List;
+import triplestar.mixchat.domain.member.friend.dto.FriendshipStateInfo;
 import triplestar.mixchat.domain.member.member.constant.Role;
 import triplestar.mixchat.domain.member.member.entity.Member;
 
@@ -64,6 +65,23 @@ public record MemberDetailResp(
                 false,
                 false,
                 null
+        );
+    }
+
+    public static MemberDetailResp from(Member member, FriendshipStateInfo friendshipStateInfo) {
+        return new MemberDetailResp(
+                member.getId(),
+                member.getNickname(),
+                member.getCountry().name(),
+                member.getEnglishLevel().name(),
+                member.getInterests(),
+                member.getDescription(),
+                member.getProfileImageUrl(),
+                member.getLastSeenAt(),
+                member.getRole(),
+                friendshipStateInfo.isFriend(),
+                friendshipStateInfo.isFriendRequestSent(),
+                friendshipStateInfo.receivedFriendRequestId()
         );
     }
 }

@@ -10,7 +10,6 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 import triplestar.mixchat.domain.member.member.entity.Member;
-import triplestar.mixchat.domain.member.member.dto.MemberDetailResp;
 
 @Repository
 public interface MemberRepository extends JpaRepository<Member, Long> {
@@ -19,49 +18,6 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
     Optional<Member> findByEmail(String email);
 
     Optional<Member> findByNickname(String username);
-
-    @Query("""
-            SELECT new triplestar.mixchat.domain.member.member.dto.MemberDetailResp(
-                m.id,
-                m.nickname,
-                CONCAT('', m.country),
-                CONCAT('', m.englishLevel),
-                m.interests,
-                m.description,
-                m.profileImageUrl,
-                m.lastSeenAt,
-                m.role,
-    
-                /* isFriend (boolean) */
-                EXISTS (
-                    SELECT f FROM Friendship f
-                    WHERE (
-                        f.smallerMember.id = :signInId AND f.largerMember.id = :memberId
-                    )
-                    OR (
-                        f.smallerMember.id = :memberId AND f.largerMember.id = :signInId
-                    )
-                ),
-            
-                /* isRequestSent (boolean) */
-                EXISTS (
-                    SELECT fr FROM FriendshipRequest fr
-                    WHERE fr.sender.id = :signInId
-                      AND fr.receiver.id = :memberId
-                ),
-            
-                /* receivedRequestId (Long) */
-                (
-                    SELECT fr.id
-                    FROM FriendshipRequest fr
-                    WHERE fr.sender.id = :memberId
-                      AND fr.receiver.id = :signInId
-                )
-            )
-            FROM Member m
-            WHERE m.id = :memberId 
-    """)
-    Optional<MemberDetailResp> findByIdWithFriendInfo(Long signInId, Long memberId);
 
     @Query("""
             SELECT m FROM Member m

@@ -7,7 +7,7 @@ public class MemberAccessPolicy {
 
     public static boolean isNotAccessible(Member member) {
         return member.isBlocked()
-                || !member.isDeleted()
+                || member.isDeleted()
                 || Role.isNotMember(member.getRole());
     }
 }
