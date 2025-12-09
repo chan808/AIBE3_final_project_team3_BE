@@ -23,6 +23,7 @@ import triplestar.mixchat.domain.chat.chat.entity.GroupChatRoom;
 import triplestar.mixchat.domain.chat.chat.repository.ChatRoomMemberRepository;
 import triplestar.mixchat.domain.chat.chat.repository.GroupChatRoomRepository;
 import triplestar.mixchat.domain.member.friend.repository.FriendshipRepository;
+import triplestar.mixchat.domain.member.member.constant.Role;
 import triplestar.mixchat.domain.member.member.entity.Member;
 import triplestar.mixchat.domain.member.member.repository.MemberRepository;
 import triplestar.mixchat.global.cache.ChatAuthCacheService;
@@ -227,6 +228,11 @@ public class GroupChatRoomService {
 
         // 4. 대상 멤버 조회
         Member targetMember = findMemberById(targetMemberId);
+
+        // 일반 회원이 아닌 경우 초대 불가
+        if (Role.isNotMember(targetMember.getRole())) {
+            throw new IllegalStateException("초대할 수 없는 멤버입니다.");
+        }
 
         // 5. ChatMember 추가
         ChatMember newMember = new ChatMember(targetMember, roomId, ChatRoomType.GROUP);
