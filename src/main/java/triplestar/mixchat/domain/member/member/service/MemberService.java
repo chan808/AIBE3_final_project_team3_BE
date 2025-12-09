@@ -12,13 +12,11 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import triplestar.mixchat.domain.member.friend.dto.FriendshipStateInfo;
 import triplestar.mixchat.domain.member.friend.repository.FriendshipRepository;
-import triplestar.mixchat.domain.member.member.constant.Role;
 import triplestar.mixchat.domain.member.member.dto.MemberDetailResp;
 import triplestar.mixchat.domain.member.member.dto.MemberInfoModifyReq;
 import triplestar.mixchat.domain.member.member.dto.MemberPresenceSummaryResp;
 import triplestar.mixchat.domain.member.member.dto.MyProfileResp;
 import triplestar.mixchat.domain.member.member.entity.Member;
-import triplestar.mixchat.domain.member.member.policy.MemberAccessPolicy;
 import triplestar.mixchat.domain.member.member.repository.MemberRepository;
 import triplestar.mixchat.domain.member.presence.service.PresenceService;
 import triplestar.mixchat.global.s3.S3Uploader;
@@ -51,7 +49,7 @@ public class MemberService {
 
     public MemberDetailResp getMemberDetails(Long currentUserId, Long memberId) {
         Member member = findMemberById(memberId);
-        if (MemberAccessPolicy.isNotAccessible(member)) {
+        if (member.isNotAccessible()) {
             throw new IllegalStateException("조회할 수 없는 회원입니다.");
         }
 

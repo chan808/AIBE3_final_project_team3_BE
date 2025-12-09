@@ -193,4 +193,10 @@ public class Member extends BaseEntity {
         this.deletedAt = LocalDateTime.now();
         this.description = "삭제된 회원입니다.";
     }
+
+    public boolean isNotAccessible() {
+        return this.isBlocked()
+                || this.isDeleted()
+                || Role.isNotMember(this.getRole());
+    }
 }
