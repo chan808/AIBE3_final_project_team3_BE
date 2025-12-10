@@ -1,7 +1,6 @@
 package triplestar.mixchat.domain.chat.chat.service;
 
 import static java.time.LocalDateTime.now;
-import static java.util.Collections.reverse;
 
 import jakarta.persistence.EntityManager;
 import java.time.LocalDateTime;
@@ -26,7 +25,6 @@ import triplestar.mixchat.domain.chat.chat.dto.RoomLastMessageUpdateResp;
 import triplestar.mixchat.domain.chat.chat.entity.ChatMember;
 import triplestar.mixchat.domain.chat.chat.entity.ChatMessage;
 import triplestar.mixchat.domain.chat.chat.entity.ChatMessage.MessageType;
-import triplestar.mixchat.domain.chat.chat.repository.AIChatRoomRepository;
 import triplestar.mixchat.domain.chat.chat.repository.ChatMessageRepository;
 import triplestar.mixchat.domain.chat.chat.repository.ChatRoomMemberRepository;
 import triplestar.mixchat.domain.chat.chat.repository.DirectChatRoomRepository;
@@ -241,9 +239,6 @@ public class ChatMessageService {
             );
         }
 
-        // 역순 정렬 (오래된 메시지 → 최신 메시지 순으로 표시)
-        reverse(messages);
-
         // 발신자 이름 조회
         List<Long> senderIds = messages.stream()
                 .map(ChatMessage::getSenderId)
@@ -270,8 +265,8 @@ public class ChatMessageService {
         boolean hasMore = false;
 
         if (!messages.isEmpty()) {
-            // nextCursor는 가장 오래된 메시지의 sequence (역순 정렬 후 첫 번째)
-            nextCursor = messages.get(0).getSequence();
+            // 리스트는 sequence desc 정렬이므로 마지막 요소가 가장 오래된 메시지
+            nextCursor = messages.get(messages.size() - 1).getSequence();
             // hasMore는 조회된 메시지 수가 pageSize와 같으면 true
             hasMore = messages.size() == pageSize;
         }
