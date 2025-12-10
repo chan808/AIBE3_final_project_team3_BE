@@ -67,6 +67,28 @@ class FriendshipRequestServiceTest {
     }
 
     @Test
+    @DisplayName("친구 요청 실패 접근 불가 회원")
+    void send_fail_is_not_accessible() {
+        Member deletedUser = TestMemberFactory.createDeletedMember("deletedUser");
+        Member deleted = memberRepository.save(deletedUser);
+        assertThatThrownBy(() -> friendshipRequestService.sendRequest(member1.getId(), deleted.getId()))
+                .isInstanceOf(IllegalStateException.class)
+                .hasMessageContaining("친구 요청을 보낼 수 없는 대상입니다.");
+
+        Member blockedUser = TestMemberFactory.createBlockedMember("blockedUser");
+        Member blocked = memberRepository.save(blockedUser);
+        assertThatThrownBy(() -> friendshipRequestService.sendRequest(member1.getId(), blocked.getId()))
+                .isInstanceOf(IllegalStateException.class)
+                .hasMessageContaining("친구 요청을 보낼 수 없는 대상입니다.");
+
+        Member adminUser = TestMemberFactory.createAdmin("admin");
+        Member admin = memberRepository.save(adminUser);
+        assertThatThrownBy(() -> friendshipRequestService.sendRequest(member1.getId(), admin.getId()))
+                .isInstanceOf(IllegalStateException.class)
+                .hasMessageContaining("친구 요청을 보낼 수 없는 대상입니다.");
+    }
+
+    @Test
     @DisplayName("친구 요청 실패 중복 요청")
     void send_fail_duplicate() {
         friendshipRequestService.sendRequest(member1.getId(), member2.getId());
