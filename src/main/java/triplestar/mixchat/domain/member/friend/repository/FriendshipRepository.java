@@ -12,78 +12,8 @@ import triplestar.mixchat.domain.member.friend.entity.Friendship;
 import triplestar.mixchat.domain.member.member.entity.Member;
 
 @Repository
-public interface FriendshipRepository extends JpaRepository<Friendship, Long> {
+public interface FriendshipRepository extends JpaRepository<Friendship, Long>, FriendshipRepositoryCustom {
     boolean existsBySmallerMember_IdAndLargerMember_Id(Long smallerId, Long largerId);
 
     Optional<Friendship> findBySmallerMember_IdAndLargerMember_Id(Long smallerId, Long largerId);
-
-    // 특정 멤버의 친구 목록 조회
-    @Query("""
-                SELECT m
-                FROM Friendship f
-                JOIN Member m
-                    ON m.id = (
-                        CASE
-                            WHEN f.smallerMember.id = :memberId THEN f.largerMember.id
-                            ELSE f.smallerMember.id
-                        END
-                    )
-                WHERE :memberId IN (f.smallerMember.id, f.largerMember.id)
-            """)
-    Page<Member> findFriendsByMemberId(Long memberId, Pageable pageable);
-
-    @Query("""
-                SELECT new triplestar.mixchat.domain.member.friend.dto.FriendDetailResp(
-                    m.id,
-                    m.nickname,
-                    CONCAT('', m.country),
-                    CONCAT('', m.englishLevel),
-                    m.interests,
-                    m.description,
-                    m.profileImageUrl,
-                    f.createdAt,
-                    m.lastSeenAt
-                )
-                FROM Friendship f
-                JOIN Member m ON (
-                    (m.id = :friendId)
-                    AND (
-                        (f.smallerMember.id = :smallerId AND f.largerMember.id = :largerId)
-                    )
-                )
-            """)
-    FriendDetailResp findFriendDetail(Long smallerId, Long largerId, Long friendId);
-
-    @Query("""
-            SELECT new triplestar.mixchat.domain.member.friend.dto.FriendshipStateInfo(
-                /* isFriend (boolean) */
-                EXISTS (
-                    SELECT f FROM Friendship f
-                    WHERE (
-                        f.smallerMember.id = :loginId AND f.largerMember.id = :memberId
-                    )
-                    OR (
-                        f.smallerMember.id = :memberId AND f.largerMember.id = :loginId
-                    )
-                ),
-            
-                /* isFriendRequestSent (boolean) */
-                EXISTS (
-                    SELECT fr FROM FriendshipRequest fr
-                    WHERE fr.sender.id = :loginId
-                      AND fr.receiver.id = :memberId
-                ),
-            
-                /* receivedFriendRequestId (Long) */
-                (
-                    SELECT fr.id
-                    FROM FriendshipRequest fr
-                    WHERE fr.sender.id = :memberId
-                      AND fr.receiver.id = :loginId
-                )
-            )
-            FROM Member m
-            WHERE m.id = :memberId
-            """)
-    FriendshipStateInfo findFriendshipStateInfo(Long loginId, Long memberId);
 }
