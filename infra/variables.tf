@@ -49,3 +49,7 @@ variable "rds_multi_az" {
   default     = false
 }
 
+variable "hosted_zone_domain" {
+  description = "The root domain name of the Route53 hosted zone (e.g. yhcho.com). Used to lookup the hosted zone for app domains."
+  default     = "mixchat.site"
+}
