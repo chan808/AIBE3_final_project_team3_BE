@@ -61,7 +61,7 @@ public class MemberRepositoryImpl implements MemberRepositoryCustom {
 
         return pageable.getSort().stream()
                 .map(order -> {
-                    PathBuilder<Member> pathBuilder = new PathBuilder<>(Member.class, "member");
+                    PathBuilder<Member> pathBuilder = new PathBuilder<>(Member.class, member.getMetadata());
                     if (order.isAscending()) {
                         return new OrderSpecifier(Order.ASC, pathBuilder.get(order.getProperty()));
                     } else {

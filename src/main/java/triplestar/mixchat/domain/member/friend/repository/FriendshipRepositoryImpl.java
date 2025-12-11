@@ -63,7 +63,7 @@ public class FriendshipRepositoryImpl implements FriendshipRepositoryCustom {
 
         return pageable.getSort().stream()
                 .map(order -> {
-                    PathBuilder<Member> pathBuilder = new PathBuilder<>(Member.class, "member");
+                    PathBuilder<Member> pathBuilder = new PathBuilder<>(Member.class, member.getMetadata());
                     if (order.isAscending()) {
                         return new OrderSpecifier(Order.ASC, pathBuilder.get(order.getProperty()));
                     } else {
@@ -75,7 +75,6 @@ public class FriendshipRepositoryImpl implements FriendshipRepositoryCustom {
 
     @Override
     public FriendDetailResp findFriendDetail(Long smallerId, Long largerId, Long friendId) {
-
         return queryFactory
                 .select(Projections.constructor(
                         FriendDetailResp.class,
