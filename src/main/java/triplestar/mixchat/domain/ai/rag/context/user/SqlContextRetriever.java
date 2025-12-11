@@ -5,14 +5,17 @@ import static triplestar.mixchat.domain.ai.rag.context.user.ContextChunkTextKey.
 
 import java.util.List;
 import java.util.Map;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Component;
 import triplestar.mixchat.domain.learningNote.learningNote.entity.LearningNote;
 import triplestar.mixchat.domain.learningNote.learningNote.repository.LearningNoteRepository;
 import triplestar.mixchat.domain.learningNote.learningNote.service.LearningNoteRagService;
 
 @Component
-public class SqlContextRetriever implements ContextRetriever {
+@Slf4j
+public class SqlContextRetriever {
 
     private final LearningNoteRepository learningNoteRepository;
     private final int minItems;
@@ -30,15 +33,14 @@ public class SqlContextRetriever implements ContextRetriever {
         this.maxItems = maxItems;
     }
 
-    @Override
-    public List<UserContextChunk> retrieve(Long userId, String userMessage, int itemSize) {
+    public List<UserContextChunk> retrieve(Long userId, int itemSize) {
         if (itemSize < minItems || itemSize > maxItems) {
             throw new IllegalArgumentException(
                     "컨텍스트 청크 수는 %d에서 %d 사이여야 합니다.".formatted(minItems, maxItems)
             );
         }
 
-        List<LearningNote> notes = learningNoteRepository.findTopNByMemberId(userId, itemSize);
+        List<LearningNote> notes = learningNoteRepository.findTopNByMemberId(userId, PageRequest.of(0, 10));
 
         // text 맵에 originalContent와 correctedContent를 모두 포함
         return notes.stream()
