@@ -17,10 +17,12 @@ import triplestar.mixchat.global.cache.LearningNoteCacheRepository;
 
 @Service
 public class LearningNoteRagService {
+
     private final LearningNoteDocumentRepository noteDocumentRepository;
     private final LearningNoteRepository learningNoteRepository;
     private final EmbeddingModel embeddingModel;
     private final LearningNoteCacheRepository learningNoteCacheRepository;
+
     public LearningNoteRagService(
             LearningNoteDocumentRepository noteDocumentRepository,
             LearningNoteRepository learningNoteRepository,
@@ -40,13 +42,11 @@ public class LearningNoteRagService {
             return;
         }
 
-        List<LearningNote> recentNotes = learningNoteRepository.findTopNByMemberId(memberId, 10);
+        List<LearningNote> recentNotes = learningNoteRepository.findTopNByMemberId(memberId, PageRequest.of(0, 10));
 
         if (recentNotes.isEmpty()){
             return;
         }
-
-
 
         Map<Long, Double> scoreMap = new HashMap<>();
 
@@ -94,6 +94,10 @@ public class LearningNoteRagService {
         if (ids == null || ids.isEmpty()) {
             saveByRecentNotes(roomId, memberId);
             ids = learningNoteCacheRepository.get(roomId, memberId);
+        }
+
+        if (ids == null || ids.isEmpty()) {
+            return List.of();
         }
 
         return learningNoteRepository.findAllById(ids);
