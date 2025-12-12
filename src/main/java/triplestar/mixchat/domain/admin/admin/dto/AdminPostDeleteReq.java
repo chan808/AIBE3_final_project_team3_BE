@@ -7,5 +7,5 @@ import jakarta.validation.constraints.NotNull;
 public record AdminPostDeleteReq(
         @Schema(description = "삭제 사유", example = "2")
         @NotNull
-        Long reasonCode
+        Integer reasonCode
 ) {}
