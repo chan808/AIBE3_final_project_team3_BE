@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
@@ -201,9 +202,9 @@ class FriendshipRequestServiceTest {
         Long requestId2 = friendshipRequestResp2.id();
         friendshipRequestService.processRequest(member3.getId(), requestId2, true);
 
-        Page<FriendSummaryResp> friendsOfMember1 = friendshipService.getFriends(member1.getId(), null);
-        Page<FriendSummaryResp> friendsOfMember2 = friendshipService.getFriends(member2.getId(), null);
-        Page<FriendSummaryResp> friendsOfMember3 = friendshipService.getFriends(member3.getId(), null);
+        Page<FriendSummaryResp> friendsOfMember1 = friendshipService.getFriends(member1.getId(), Pageable.ofSize(3));
+        Page<FriendSummaryResp> friendsOfMember2 = friendshipService.getFriends(member2.getId(), Pageable.ofSize(3));
+        Page<FriendSummaryResp> friendsOfMember3 = friendshipService.getFriends(member3.getId(), Pageable.ofSize(3));
 
         assertThat(friendsOfMember1.getTotalElements()).isEqualTo(2);
         assertThat(friendsOfMember2.getTotalElements()).isEqualTo(1);

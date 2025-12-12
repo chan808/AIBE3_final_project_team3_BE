@@ -23,8 +23,8 @@ public class NotificationRepositoryImpl implements NotificationRepositoryCustom 
 
     @Override
     public Page<Notification> findAllByReceiverId(Long receiverId, Pageable pageable) {
-        QMember receiver = QMember.member;
-        QMember sender = QMember.member;
+        QMember receiver = new QMember("receiver");
+        QMember sender = new QMember("sender");
 
         List<Notification> results = queryFactory
                 .selectFrom(notification)
