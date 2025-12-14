@@ -80,10 +80,12 @@ public class ApiV1PostController implements ApiPostController {
             @PathVariable Long postId,
             @RequestPart("title") String title,
             @RequestPart("content") String content,
+            @RequestPart(value = "removeImages", required = false) String removeImagesStr,
             @RequestPart(value = "images", required = false) List<MultipartFile> images
     ) {
         boolean isAdmin = userDetails.getRole() == Role.ROLE_ADMIN;
-        PostUpdateReq req = new PostUpdateReq(title, content);
+        boolean removeImages = Boolean.parseBoolean(removeImagesStr);
+        PostUpdateReq req = new PostUpdateReq(title, content, removeImages);
         postService.updatePost(postId, userDetails.getId(), isAdmin, req, images);
         PostDetailResp response = postService.getPost(postId, userDetails.getId());
         return CustomResponse.ok("게시글 수정 성공", response);

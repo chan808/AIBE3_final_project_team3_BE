@@ -76,6 +76,7 @@ public interface ApiPostController {
             Long postId,
             @NotBlank @Size(min = 1, max = 255) String title,
             @NotBlank @Size(min = 1, max = 10000) String content,
+            @Parameter(description = "이미지 삭제 여부 (true/false)") String removeImages,
             @Parameter(description = "이미지 파일들 (최대 10개)")
             List<MultipartFile> images
     );
