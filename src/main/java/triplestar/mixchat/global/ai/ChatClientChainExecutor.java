@@ -34,7 +34,7 @@ public class ChatClientChainExecutor {
                 }
             }
         }
-        throw new IllegalStateException("모든 provider 실패");
+        throw new RuntimeException("모든 provider 실패");
     }
 
     private String bindResult(String system, String user, List<Message> context, ChatClient chatClient) {
