@@ -8,7 +8,6 @@ import triplestar.mixchat.domain.chat.chat.constant.AiChatRoomType;
 import triplestar.mixchat.domain.chat.chat.entity.AIChatRoom;
 import triplestar.mixchat.domain.chat.chat.repository.AIChatRoomRepository;
 
-// Facade pattern
 @Service
 @RequiredArgsConstructor
 public class AiChatBotService {

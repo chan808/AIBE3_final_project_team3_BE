@@ -72,17 +72,6 @@ class PostServiceTest {
     }
 
     // S3 업로드 기능으로 변경되어 주석 처리 (이미지 URL 검증 관련 테스트들은 S3 Mock 필요)
-    // @Test
-    // @DisplayName("게시글 생성 - 이미지 포함")
-    // void createPost_withImages_success() { }
-    //
-    // @Test
-    // @DisplayName("게시글 생성 - 이미지 개수 초과 실패")
-    // void createPost_tooManyImages_fail() { }
-    //
-    // @Test
-    // @DisplayName("게시글 생성 - 잘못된 URL 형식 실패")
-    // void createPost_invalidUrlFormat_fail() { }
 
     @Test
     @DisplayName("게시글 목록 조회 - 최신순")

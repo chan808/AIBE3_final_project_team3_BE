@@ -150,13 +150,6 @@ public class ChatMemberService {
         throw new UnsupportedOperationException("차단 기능은 아직 구현되지 않았습니다.");
     }
 
-    // TODO: 채팅방에서 특정 사용자 신고
-    @Transactional
-    public void reportUser(Long currentUserId, Long targetUserId, Long roomId, ChatRoomType chatRoomType,
-                           String reason) {
-        throw new UnsupportedOperationException("신고 기능은 아직 구현되지 않았습니다.");
-    }
-
     // 채팅방의 현재 구독자 수 조회 (Redis)
     public int getSubscriberCount(Long roomId) {
         Set<String> subscribers = chatSubscriberCacheService.getSubscribers(roomId);

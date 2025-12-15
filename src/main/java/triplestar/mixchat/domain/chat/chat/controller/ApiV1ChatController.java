@@ -148,7 +148,6 @@ public class ApiV1ChatController implements ApiChatController {
         return CustomResponse.ok("그룹 채팅방 상세 조회에 성공하였습니다.", room);
     }
 
-    // todo: 비밀번호 걸린 방도 public 조회는 혼동 여지 존재. 위를 me로 바꾸고 아래를 group으로 고려
     @GetMapping("/rooms/group/public")
     public CustomResponse<?> getPublicGroupChatRooms(
             @RequestParam(defaultValue = "0") int page,

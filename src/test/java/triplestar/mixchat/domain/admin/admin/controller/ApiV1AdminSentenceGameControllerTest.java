@@ -55,7 +55,6 @@ class ApiV1AdminSentenceGameControllerTest {
         testMember = memberRepository.save(TestMemberFactory.createMember("testMember"));
     }
 
-    // -------------------------------------------------------
     @Test
     @DisplayName("관리자 미니게임 문장 등록 성공")
     @WithUserDetails(value = "testAdmin", userDetailsServiceBeanName = "testUserDetailsService",

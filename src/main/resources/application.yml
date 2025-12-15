@@ -79,7 +79,7 @@ spring:
       api-key: ${OPENAI_API_KEY}
       chat:
         options:
-          model: ${OPENAI_CHAT_MODEL:gpt-4o-mini}
+          model: ${OPENAI_CHAT_MODEL:gpt-5.1}
       embedding:
         options:
           model: text-embedding-3-small
