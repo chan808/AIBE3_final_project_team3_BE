@@ -124,6 +124,11 @@ public class ChatMemberService {
         // 4. 남은 멤버 수 확인 후 대화방 삭제 (해당 타입의 방에만 적용)
         long remainingMembersCount = chatRoomMemberRepository.countByChatRoomIdAndChatRoomType(roomId, chatRoomType);
 
+        if (chatRoomType == ChatRoomType.AI) {
+            aiChatRoomRepository.deleteById(roomId);
+            return;
+        }
+
         if (remainingMembersCount == 0) {
             switch (chatRoomType) {
                 case DIRECT:
@@ -131,9 +136,6 @@ public class ChatMemberService {
                     break;
                 case GROUP:
                     groupChatRoomRepository.deleteById(roomId);
-                    break;
-                case AI:
-                    aiChatRoomRepository.deleteById(roomId);
                     break;
                 default:
                     log.warn("알 수 없는 대화 타입으로 인해 방 삭제에 실패했습니다: {}", chatRoomType);
