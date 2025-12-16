@@ -24,9 +24,9 @@ import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
-import triplestar.mixchat.domain.admin.admin.dto.AdminSentenceGameCreateReq;
-import triplestar.mixchat.domain.learningNote.learningNote.entity.LearningNote;
-import triplestar.mixchat.domain.learningNote.learningNote.repository.LearningNoteRepository;
+import triplestar.mixchat.domain.admin.dto.AdminSentenceGameCreateReq;
+import triplestar.mixchat.domain.learningNote.entity.LearningNote;
+import triplestar.mixchat.domain.learningNote.repository.LearningNoteRepository;
 import triplestar.mixchat.domain.member.member.entity.Member;
 import triplestar.mixchat.domain.member.member.repository.MemberRepository;
 import triplestar.mixchat.domain.miniGame.sentenceGame.entity.SentenceGame;
@@ -55,7 +55,6 @@ class ApiV1AdminSentenceGameControllerTest {
         testMember = memberRepository.save(TestMemberFactory.createMember("testMember"));
     }
 
-    // -------------------------------------------------------
     @Test
     @DisplayName("관리자 미니게임 문장 등록 성공")
     @WithUserDetails(value = "testAdmin", userDetailsServiceBeanName = "testUserDetailsService",

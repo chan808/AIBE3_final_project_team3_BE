@@ -17,8 +17,7 @@ import triplestar.mixchat.domain.chat.chat.repository.DirectChatRoomRepository;
 import triplestar.mixchat.domain.chat.chat.repository.GroupChatRoomRepository;
 import triplestar.mixchat.domain.member.member.dto.MemberSummaryResp;
 import triplestar.mixchat.domain.member.member.entity.Member;
-import triplestar.mixchat.domain.member.member.repository.MemberRepository;
-import triplestar.mixchat.global.ai.BotConstant;
+import triplestar.mixchat.global.ai.BotMemberIdProvider;
 import triplestar.mixchat.global.cache.ChatAuthCacheService;
 import triplestar.mixchat.global.cache.ChatSubscriberCacheService;
 
@@ -36,6 +35,7 @@ public class ChatMemberService {
     private final AIChatRoomRepository aiChatRoomRepository;
     private final SimpMessagingTemplate messagingTemplate;
     private final ChatSequenceGenerator chatSequenceGenerator;
+    private final BotMemberIdProvider botMemberProvider;
 
     //사용자가 특정 대화방의 멤버인지 확인 (캐시 적용)
     public void verifyUserIsMemberOfRoom(Long memberId, Long roomId, ChatRoomType chatRoomType) {
@@ -43,7 +43,7 @@ public class ChatMemberService {
             throw new AccessDeniedException("사용자, 대화방 정보 또는 대화 타입이 유효하지 않습니다.");
         }
 
-        if (memberId.equals(BotConstant.BOT_MEMBER_ID)) {
+        if (memberId.equals(botMemberProvider.getBotMemberId())) {
             // 봇 사용자는 모든 방에 접근 허용
             return;
         }
@@ -124,6 +124,11 @@ public class ChatMemberService {
         // 4. 남은 멤버 수 확인 후 대화방 삭제 (해당 타입의 방에만 적용)
         long remainingMembersCount = chatRoomMemberRepository.countByChatRoomIdAndChatRoomType(roomId, chatRoomType);
 
+        if (chatRoomType == ChatRoomType.AI) {
+            aiChatRoomRepository.deleteById(roomId);
+            return;
+        }
+
         if (remainingMembersCount == 0) {
             switch (chatRoomType) {
                 case DIRECT:
@@ -131,9 +136,6 @@ public class ChatMemberService {
                     break;
                 case GROUP:
                     groupChatRoomRepository.deleteById(roomId);
-                    break;
-                case AI:
-                    aiChatRoomRepository.deleteById(roomId);
                     break;
                 default:
                     log.warn("알 수 없는 대화 타입으로 인해 방 삭제에 실패했습니다: {}", chatRoomType);
@@ -146,12 +148,6 @@ public class ChatMemberService {
     @Transactional
     public void blockUser(Long currentUserId, Long targetUserId, Long roomId, ChatRoomType chatRoomType) {
         throw new UnsupportedOperationException("차단 기능은 아직 구현되지 않았습니다.");
-    }
-
-    // TODO: 채팅방에서 특정 사용자 신고
-    @Transactional
-    public void reportUser(Long currentUserId, Long targetUserId, Long roomId, ChatRoomType chatRoomType, String reason) {
-        throw new UnsupportedOperationException("신고 기능은 아직 구현되지 않았습니다.");
     }
 
     // 채팅방의 현재 구독자 수 조회 (Redis)
@@ -167,7 +163,9 @@ public class ChatMemberService {
 
     // 구독자 수 변경 브로드캐스트
     public void broadcastSubscriberCount(Long roomId, ChatRoomType chatRoomType) {
-        if (chatRoomType == ChatRoomType.AI) return;
+        if (chatRoomType == ChatRoomType.AI) {
+            return;
+        }
 
         int subscriberCount = getSubscriberCount(roomId);
         int totalMemberCount = getTotalMemberCount(roomId, chatRoomType);
@@ -181,13 +179,16 @@ public class ChatMemberService {
 
     // 멤버 변경(입/퇴장/강퇴) 브로드캐스트
     public void broadcastMemberUpdate(Long roomId, ChatRoomType chatRoomType, Member member, String type) {
-        if (chatRoomType == ChatRoomType.AI) return;
+        if (chatRoomType == ChatRoomType.AI) {
+            return;
+        }
 
         int subscriberCount = getSubscriberCount(roomId);
         int totalMemberCount = getTotalMemberCount(roomId, chatRoomType);
         MemberSummaryResp memberSummary = MemberSummaryResp.from(member);
 
-        RoomMemberUpdateResp resp = new RoomMemberUpdateResp(roomId, type, memberSummary, totalMemberCount, subscriberCount);
+        RoomMemberUpdateResp resp = new RoomMemberUpdateResp(roomId, type, memberSummary, totalMemberCount,
+                subscriberCount);
         String destination = "/topic/" + chatRoomType.name().toLowerCase() + ".rooms." + roomId;
         messagingTemplate.convertAndSend(destination, resp);
     }

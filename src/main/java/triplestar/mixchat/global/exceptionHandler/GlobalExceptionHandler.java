@@ -137,8 +137,6 @@ public class GlobalExceptionHandler {
         );
     }
 
-    // TODO : 429 AI API 호출 관련 핸들러 추후 추가 요망
-
     @ExceptionHandler(Exception.class)
     public ResponseEntity<CustomResponse<Void>> handle(Exception e) throws Exception {
         log.error("[ExceptionHandler] {} : {}", e.getClass().getSimpleName(), e.getMessage(), e);

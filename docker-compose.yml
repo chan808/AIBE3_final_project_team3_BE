@@ -56,6 +56,7 @@ services:
     networks:
       - mixchat-network
 
+  # 채팅 캐시데이터 및 세션관리를 위한 Redis 초기화를 이용해 사용 가능(현재 미사용)
   redis-init:
     image: redis:8.0
     depends_on:

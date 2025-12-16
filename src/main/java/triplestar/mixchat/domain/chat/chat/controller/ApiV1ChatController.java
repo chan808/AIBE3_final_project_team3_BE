@@ -19,9 +19,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
-import triplestar.mixchat.domain.ai.systemprompt.dto.AiFeedbackReq;
-import triplestar.mixchat.domain.ai.systemprompt.dto.AiFeedbackResp;
-import triplestar.mixchat.domain.ai.systemprompt.service.AiFeedbackService;
+import triplestar.mixchat.domain.ai.translation.dto.AiFeedbackReq;
+import triplestar.mixchat.domain.ai.translation.dto.AiFeedbackResp;
+import triplestar.mixchat.domain.ai.translation.service.AiFeedbackService;
 import triplestar.mixchat.domain.chat.chat.constant.ChatRoomType;
 import triplestar.mixchat.domain.chat.chat.dto.AIChatRoomResp;
 import triplestar.mixchat.domain.chat.chat.dto.ChatRoomPageDataResp;
@@ -29,7 +29,6 @@ import triplestar.mixchat.domain.chat.chat.dto.CreateAIChatReq;
 import triplestar.mixchat.domain.chat.chat.dto.CreateDirectChatReq;
 import triplestar.mixchat.domain.chat.chat.dto.CreateGroupChatReq;
 import triplestar.mixchat.domain.chat.chat.dto.DirectChatRoomResp;
-import triplestar.mixchat.domain.chat.chat.dto.GroupChatRoomPublicResp;
 import triplestar.mixchat.domain.chat.chat.dto.GroupChatRoomResp;
 import triplestar.mixchat.domain.chat.chat.dto.GroupChatRoomSummaryResp;
 import triplestar.mixchat.domain.chat.chat.dto.InviteGroupChatReq;
@@ -148,7 +147,6 @@ public class ApiV1ChatController implements ApiChatController {
         return CustomResponse.ok("그룹 채팅방 상세 조회에 성공하였습니다.", room);
     }
 
-    // todo: 비밀번호 걸린 방도 public 조회는 혼동 여지 존재. 위를 me로 바꾸고 아래를 group으로 고려
     @GetMapping("/rooms/group/public")
     public CustomResponse<?> getPublicGroupChatRooms(
             @RequestParam(defaultValue = "0") int page,
